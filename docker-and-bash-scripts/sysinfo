@@ -1,0 +1,7 @@
+#! /bin/bash
+# display system info
+
+echo "=== System Information ==="
+echo "Hostname: $(hostname)"
+echo "Date: $(date)"
+echo "Kernel $(uname -r)"
