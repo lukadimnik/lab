@@ -10,10 +10,7 @@ spec:
     matchLabels:
       app: test
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
+    type: Recreate
   template:
     metadata:
       labels:
@@ -22,5 +19,3 @@ spec:
       containers:
       - image: httpd:alpine3.18
         name: httpd
-        command: ["/bin/bash", "-c"] # override the default command
-        args: ["sleep 5; exit 1"] # sleep for 30 seconds then exit with an error
