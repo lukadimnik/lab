@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-storage
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.14.2
+      volumeMounts:
+        - mountPath: /scratch
+          name: scratch-volume
+    - name: busybox
+      image: busybox
+      command: ["/bin/sh", "-c"] # this is the command that will be run
+      args: ["sleep 1000"] # this is the argument that will be passed to the sh command
+      # its the same as running /bin/sh -c "sleep 1000"
+      volumeMounts:
+        - mountPath: /scratch
+          name: scratch-volume
+  volumes:
+    - name: scratch-volume
+      persistentVolumeClaim:
+        claimName: mealie-data
