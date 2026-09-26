@@ -3,7 +3,9 @@
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/python:3-3.14-trixie",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {},
+        "ghcr.io/xavierbeheydt/devcontainer-extras/lazyvim:0": {}
   },
   "remoteEnv": {
     "MY_VAR": "Luka Dimnik"
