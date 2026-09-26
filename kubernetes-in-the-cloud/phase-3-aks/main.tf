@@ -24,6 +24,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   resource_group_name = azurerm_resource_group.aks.name
   dns_prefix          = "mercury"
   kubernetes_version  = "1.34.0"
+  oidc_issuer_enabled = true
 
   default_node_pool {
     name       = "default"
@@ -43,6 +44,87 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
 }
+
+resource "azurerm_postgresql_flexible_server" "n8n_db_server" {
+  name                          = "n8n-postgresql-server-luka"
+  resource_group_name           = azurerm_resource_group.aks.name
+  location                      = azurerm_resource_group.aks.location
+  version                       = "17"
+  administrator_login           = "adminterraform"
+  administrator_password        = "test"
+  zone                          = "2"
+  storage_mb                    = 32768
+  sku_name                      = "GP_Standard_D2s_v3"
+  public_network_access_enabled = true
+  backup_retention_days         = 7
+}
+
+resource "azurerm_postgresql_flexible_server_database" "n8n-db" {
+  name      = "n8n-db"
+  server_id = azurerm_postgresql_flexible_server.n8n_db_server.id
+  collation = "en_US.utf8"
+  charset   = "UTF8"
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "disable_ssl" {
+  name      = "require_secure_transport"
+  server_id = azurerm_postgresql_flexible_server.n8n_db_server.id
+  value     = "OFF"
+}
+
+
+resource "azurerm_postgresql_flexible_server_firewall_rule" "db_firewall" {
+  name             = "db_firewall"
+  server_id        = azurerm_postgresql_flexible_server.n8n_db_server.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+output "resource_group_name" {
+  value = azurerm_resource_group.aks.name
+}
+
+output "azurerm_postgresql_flexible_server" {
+  value = azurerm_postgresql_flexible_server.n8n_db_server.name
+}
+
+output "postgresql_flexible_server_database_name" {
+  value = azurerm_postgresql_flexible_server_database.n8n-db.name
+}
+
+output "postgresql_flexible_server_admin_password" {
+  sensitive = true
+  value     = azurerm_postgresql_flexible_server.n8n_db_server.administrator_password
+}
+
+output "postgresql_flexible_server_admin_name" {
+  value = azurerm_postgresql_flexible_server.n8n_db_server.administrator_login
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # DB
 #
